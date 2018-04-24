@@ -2,6 +2,8 @@ package isp.collections;
 
 import isp.collections.services.ServiciuSerializare;
 import isp.entity.Utilizator;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class CatalogUtilizatori {
@@ -9,7 +11,13 @@ public class CatalogUtilizatori {
     private ServiciuSerializare serviciuSerializare = ServiciuSerializare.getInstance();
     private ArrayList<Utilizator> catalog = new ArrayList<>();
 
-    private CatalogUtilizatori() {}
+    private CatalogUtilizatori() {
+        try {
+            catalog = serviciuSerializare.incarcareFisier(Utilizator.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static CatalogUtilizatori getInstance() {
         if (instance == null) {
@@ -20,10 +28,18 @@ public class CatalogUtilizatori {
     }
 
     public void adaugaUtilizator(Utilizator utilizator) {
-
+        try {
+            catalog.add(utilizator);
+            serviciuSerializare.serializare(catalog.toArray(new Utilizator[0]));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public Utilizator cautaUtilizator(String cnp) {
-        return null;
+    public Utilizator cautaUtilizator(String nume) {
+        return catalog.stream()
+                .filter(utilizator -> utilizator.getNume().equals(nume))
+                .findFirst()
+                .orElse(null);
     }
 }

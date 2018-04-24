@@ -29,7 +29,7 @@ public class ServiciuSerializare {
         return instance;
     }
 
-    public void serializareObiect(Object object) throws IOException {
+    public void serializare(Object object) throws IOException {
         String fisier = fisiere.get(object.getClass().toString());
         File file = new File(fisier);
         if (!file.exists()) {
@@ -45,10 +45,17 @@ public class ServiciuSerializare {
         Class toArray = Array.newInstance(clasa, 0).getClass();
         String fisier = fisiere.get(toArray.toString());
 
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(fisier));
-        Object[] array = (Object[]) in.readObject();
-        in.close();
+        ObjectInputStream in;
+        Object[] array;
 
+        try {
+            in = new ObjectInputStream(new FileInputStream(fisier));
+            array = (Object[]) in.readObject();
+        } catch(EOFException ex) {
+            return new ArrayList();
+        }
+
+        in.close();
         return new ArrayList<>(Arrays.asList(array));
     }
 }

@@ -1,15 +1,17 @@
 package isp;
 
-import isp.collections.services.ServiciuSerializare;
-import isp.entity.Utilizator;
-
-import java.util.ArrayList;
+import isp.collections.services.ServiciuUtilizatori;
 
 public class Aplicatie {
     public static void main(String[] args) {
         try {
-            ArrayList<Utilizator> users = ServiciuSerializare.getInstance().incarcareFisier(Utilizator.class);
-            users.forEach(user -> System.out.println(user.afisare()));
+            ServiciuUtilizatori.getInstance().inregistrareUtilizator(
+                "Cosmin",
+                "123pass",
+                "cosmin.stoica@zitec.com",
+                "Politehnica",
+                "1970505471333"
+            );
         } catch (Exception e) {
             e.printStackTrace();
         }
