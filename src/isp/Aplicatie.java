@@ -20,17 +20,17 @@ public class Aplicatie {
         "1970505471333"
     );
 
-    public enum Command {
-        login,
-        auto,
-        logout,
-        register,
-        profile,
-        list,
-        add,
-        rm,
-        update,
-        exit
+    public enum Command {   // comenzi de executat in consola dupa rulare; pur si simplu scrieti comanda
+        login,          // login cu un user inregistrat
+        auto,           // login automat pe userul global
+        logout,         // logout de pe userul curent
+        register,       // inregistreaza un utilizator nou
+        profile,        // afiseaza profil pentru utilizatorul curent
+        list,           // listeaza imaginile utilizatorului curent
+        add,            // adauga o imagine; daca nu sunteti logat, veti posta o imagine drept utilizator anonim
+        rm,             // sterge o imagine
+        update,         // update de stare pentru o imagine
+        exit            // inchide aplicatia definitiv
     }
 
     public static Aplicatie getInstance() {
