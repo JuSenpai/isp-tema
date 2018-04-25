@@ -1,18 +1,27 @@
 package isp.collections;
 
+import isp.collections.services.ServiciuSerializare;
 import isp.entity.Imagine;
 import isp.entity.SituatieDefect;
 import isp.entity.TipDefectiune;
 import isp.entity.Utilizator;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class CatalogImagine {
     private static CatalogImagine instance = null;
+    private ServiciuSerializare serviciuSerializare = ServiciuSerializare.getInstance();
     private ArrayList<Imagine> catalog = new ArrayList<>();
 
-    private CatalogImagine() {}
+    private CatalogImagine() {
+        try {
+            catalog = serviciuSerializare.incarcareFisier(Imagine.class);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public static CatalogImagine getInstance() {
         if (instance == null) {
             instance = new CatalogImagine();
@@ -22,26 +31,78 @@ public class CatalogImagine {
     }
 
     public void adaugaImagine(Imagine imagine) {
-
+        try {
+            catalog.add(imagine);
+            serviciuSerializare.serializare(catalog.toArray(new Imagine[0]));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void stergeImagine(Imagine imagine) {
-
+    public void stergeImagine(int id) {
+        try {
+            catalog.removeIf(imagine1 -> id == imagine1.getId());
+            serviciuSerializare.serializare(catalog.toArray(new Imagine[0]));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void modificaImagine(Imagine imagine) {
-
+    public void updateImagine(int id, SituatieDefect stareNoua) {
+        try {
+            catalog.stream()
+                    .filter(imagine1 -> imagine1.getId() == id)
+                    .findFirst()
+                    .ifPresent(imagine1 -> imagine1.update(stareNoua));
+            serviciuSerializare.serializare(catalog.toArray(new Imagine[0]));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public List cautareDupaUtilizator(Utilizator utilizator) {
-        return null;
+    public ArrayList<Imagine> getImagini() {
+        return catalog;
     }
 
-    public List cautareDupaTipDefectiune(TipDefectiune tipDefectiune) {
-        return null;
+    public ArrayList<Imagine> cautareDupaUtilizator(Utilizator utilizator) {
+        ArrayList<Imagine> imagini = new ArrayList<>();
+
+        int n = catalog.size();
+        for (int i = 0;i<n;i++) {
+            Imagine imagine = catalog.get(i);
+            if (imagine.getUtilizator().getNume().equals(utilizator.getNume())) {
+                imagini.add(imagine);
+            }
+        }
+
+        return imagini;
     }
 
-    public List cautareDupaStareCurenta(SituatieDefect stareCurenta) {
-        return null;
+    public ArrayList<Imagine> cautareDupaTipDefectiune(TipDefectiune tipDefectiune) {
+        ArrayList<Imagine> imagini = new ArrayList<>();
+
+        int n = catalog.size();
+        for (int i = 0;i<n;i++) {
+            Imagine imagine = catalog.get(i);
+            if (imagine.getTipDefectiune().equals(tipDefectiune)) {
+                imagini.add(imagine);
+            }
+        }
+
+        return imagini;
+    }
+
+    public ArrayList<Imagine> cautareDupaStareCurenta(SituatieDefect stareCurenta) {
+        ArrayList<Imagine> imagini = new ArrayList<>();
+
+        int n = catalog.size();
+        for (int i = 0;i<n;i++) {
+            Imagine imagine = catalog.get(i);
+            if (imagine.getStareCurenta().equals(stareCurenta)) {
+                imagini.add(imagine);
+            }
+        }
+
+        return imagini;
     }
 }

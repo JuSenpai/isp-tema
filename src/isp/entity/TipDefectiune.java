@@ -5,5 +5,6 @@ public enum TipDefectiune {
     aparaturaDefecta,
     absentaResurse,
     elementInestetic,
-    poateFiImbunatatit
+    poateFiImbunatatit,
+    altele
 }

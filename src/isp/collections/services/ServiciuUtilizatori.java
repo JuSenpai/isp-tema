@@ -2,6 +2,7 @@ package isp.collections.services;
 
 import isp.collections.CatalogUtilizatori;
 import isp.entity.Utilizator;
+import isp.entity.UtilizatorAnonim;
 import isp.exception.RegistrationException;
 
 public class ServiciuUtilizatori {
@@ -36,6 +37,14 @@ public class ServiciuUtilizatori {
         catalog.adaugaUtilizator(utilizator);
 
         return utilizator;
+    }
+
+    public UtilizatorAnonim inregistrareAnonima(String nume) throws RegistrationException {
+        if (catalog.cautaUtilizator(nume) != null) {
+            throw new RegistrationException("Nu poti alege numele unui utilizator inregistrat!");
+        }
+
+        return new UtilizatorAnonim(nume);
     }
 
     public boolean autentificareUtilizator(String nume, String parola) {

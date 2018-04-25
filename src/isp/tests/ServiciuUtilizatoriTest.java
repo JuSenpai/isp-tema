@@ -36,29 +36,17 @@ public class ServiciuUtilizatoriTest {
 
     @Test(expected = RegistrationException.class)
     public void testInregistrareContExistent() throws RegistrationException {
-        String[] data = inregistrareEsuataDataProvider().get(0);
-        String nume = data[0], parola = data[1], email = data[2], universitate = data[3], cnp = data[4];
-
-        Utilizator utilizator = new Utilizator(nume, parola, email, universitate, cnp);
-        Utilizator rezultat = ServiciuUtilizatori.getInstance().inregistrareUtilizator(nume, parola, email, universitate, cnp);
+        testInregistrareEsuata(0);
     }
 
     @Test(expected = RegistrationException.class)
     public void testInregistrareParolaPreaUsoara() throws RegistrationException {
-        String[] data = inregistrareEsuataDataProvider().get(1);
-        String nume = data[0], parola = data[1], email = data[2], universitate = data[3], cnp = data[4];
-
-        Utilizator utilizator = new Utilizator(nume, parola, email, universitate, cnp);
-        Utilizator rezultat = ServiciuUtilizatori.getInstance().inregistrareUtilizator(nume, parola, email, universitate, cnp);
+        testInregistrareEsuata(0);
     }
 
     @Test(expected = RegistrationException.class)
     public void testInregistrareCNPInvalid() throws RegistrationException {
-        String[] data = inregistrareEsuataDataProvider().get(2);
-        String nume = data[0], parola = data[1], email = data[2], universitate = data[3], cnp = data[4];
-
-        Utilizator utilizator = new Utilizator(nume, parola, email, universitate, cnp);
-        Utilizator rezultat = ServiciuUtilizatori.getInstance().inregistrareUtilizator(nume, parola, email, universitate, cnp);
+        testInregistrareEsuata(2);
     }
 
     @Test
@@ -76,17 +64,23 @@ public class ServiciuUtilizatoriTest {
     @Test
     public void testAutentificareEsuataNume() throws RegistrationException {
         String nume = String.valueOf(Math.random() * 100000);
-        String parola = "asdf";
-        String email = "cosmin.stoica97@gmail.com";
-        String universitate = "poli";
-        String cnp = "1970505471333";
-
-        ServiciuUtilizatori.getInstance().inregistrareUtilizator(nume, parola, email, universitate, cnp);
-        assertFalse(ServiciuUtilizatori.getInstance().autentificareUtilizator("ASD", parola));
+        testAutentificare(nume, "asdf");
     }
 
     @Test
     public void testAutentificareEsuataParola() throws RegistrationException {
+        testAutentificare(null, "asd");
+    }
+
+    private void testInregistrareEsuata(int i) throws RegistrationException {
+        String[] data = inregistrareEsuataDataProvider().get(i);
+        String nume = data[0], parola = data[1], email = data[2], universitate = data[3], cnp = data[4];
+
+        Utilizator utilizator = new Utilizator(nume, parola, email, universitate, cnp);
+        Utilizator rezultat = ServiciuUtilizatori.getInstance().inregistrareUtilizator(nume, parola, email, universitate, cnp);
+    }
+
+    private void testAutentificare(String username, String password) throws RegistrationException {
         String nume = String.valueOf(Math.random() * 100000);
         String parola = "asdf";
         String email = "cosmin.stoica97@gmail.com";
@@ -94,6 +88,6 @@ public class ServiciuUtilizatoriTest {
         String cnp = "1970505471333";
 
         ServiciuUtilizatori.getInstance().inregistrareUtilizator(nume, parola, email, universitate, cnp);
-        assertFalse(ServiciuUtilizatori.getInstance().autentificareUtilizator(nume, "asd"));
+        assertFalse(ServiciuUtilizatori.getInstance().autentificareUtilizator(username == null ? nume : username, password));
     }
 }
