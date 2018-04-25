@@ -12,6 +12,13 @@ public class Aplicatie {
     private static Aplicatie instance = null;
     public static final String SEPARATOR = "-------------------------------------------------------";
     private Utilizator utilizatorCurent = null;
+    public static final Utilizator GLOBAL_USER = new Utilizator(
+        "Fairy Godmother",
+        "123",
+        "selena@fairysociety.com",
+        "The Magic School of White, Dark, Grey and Pink Fairies",
+        "1970505471333"
+    );
 
     public enum Command {
         login,
@@ -249,7 +256,7 @@ public class Aplicatie {
                         System.out.println(SEPARATOR);
                         break;
                     case auto:
-                        app.setUtilizatorCurent(CatalogUtilizatori.getInstance().cautaUtilizator("Cosmin"));
+                        app.setUtilizatorCurent(GLOBAL_USER);
                         System.out.println(SEPARATOR);
                         System.out.println("Autentificare rapida pentru test utilizata!");
                         System.out.println(SEPARATOR);
@@ -283,5 +290,4 @@ public class Aplicatie {
             }
         }
     }
-
 }
