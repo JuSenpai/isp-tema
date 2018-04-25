@@ -32,6 +32,7 @@ public class Aplicatie {
         update,
         exit
     }
+
     public static Aplicatie getInstance() {
         if (instance == null) {
             instance = new Aplicatie();
