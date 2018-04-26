@@ -29,7 +29,8 @@ public class ServiciuUtilizatoriTest {
         ArrayList<String[]> provider = new ArrayList<>();
         provider.add(new String[] {"Ion", "asda", "asd", "poli", "cnp"});           // numele exista
         provider.add(new String[] {"Gigel", "bl", "asd", "poli", "cnp"});           // parola prea usoara
-        provider.add(new String[] {"Florin", "asda", "asd", "poli", "cnp"});           // cnp invalid
+        provider.add(new String[] {"Florin", "asda", "asd@asd.com", "poli", "cnp"});           // cnp invalid
+        provider.add(new String[] {"Bucur", "asdf", "asd", "poli", "cnp"});         // email invalid
 
         return provider;
     }
@@ -41,12 +42,24 @@ public class ServiciuUtilizatoriTest {
 
     @Test(expected = RegistrationException.class)
     public void testInregistrareParolaPreaUsoara() throws RegistrationException {
-        testInregistrareEsuata(0);
+        testInregistrareEsuata(1);
     }
 
     @Test(expected = RegistrationException.class)
     public void testInregistrareCNPInvalid() throws RegistrationException {
         testInregistrareEsuata(2);
+    }
+
+    @Test(expected = RegistrationException.class)
+    public void testInregistrareEmailInvalid() throws RegistrationException {
+        testInregistrareEsuata(3);
+    }
+
+    private void testInregistrareEsuata(int i) throws RegistrationException {
+        String[] data = inregistrareEsuataDataProvider().get(i);
+        String nume = data[0], parola = data[1], email = data[2], universitate = data[3], cnp = data[4];
+
+        ServiciuUtilizatori.getInstance().inregistrareUtilizator(nume, parola, email, universitate, cnp);
     }
 
     @Test
@@ -70,14 +83,6 @@ public class ServiciuUtilizatoriTest {
     @Test
     public void testAutentificareEsuataParola() throws RegistrationException {
         testAutentificare(null, "asd");
-    }
-
-    private void testInregistrareEsuata(int i) throws RegistrationException {
-        String[] data = inregistrareEsuataDataProvider().get(i);
-        String nume = data[0], parola = data[1], email = data[2], universitate = data[3], cnp = data[4];
-
-        Utilizator utilizator = new Utilizator(nume, parola, email, universitate, cnp);
-        Utilizator rezultat = ServiciuUtilizatori.getInstance().inregistrareUtilizator(nume, parola, email, universitate, cnp);
     }
 
     private void testAutentificare(String username, String password) throws RegistrationException {

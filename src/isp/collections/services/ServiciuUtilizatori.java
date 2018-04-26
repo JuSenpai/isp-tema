@@ -29,6 +29,10 @@ public class ServiciuUtilizatori {
             throw new RegistrationException("Parola nu este suficient de puternică");
         }
 
+        if (!email.matches(".+@.+\\..+")) {
+            throw new RegistrationException("Emailul nu este valid");
+        }
+
         if (cnp.length() != 13) {
             throw new RegistrationException("CNP-ul nu are 13 caractere");
         }
