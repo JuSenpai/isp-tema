@@ -1,5 +1,6 @@
 package isp.tests;
 
+import isp.collections.CatalogUtilizatori;
 import isp.collections.services.ServiciuUtilizatori;
 import isp.entity.Utilizator;
 import isp.exception.RegistrationException;
@@ -8,19 +9,30 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ServiciuUtilizatoriTest {
 
+    private ServiciuUtilizatori systemUnderTest;
+    private CatalogUtilizatori catalogUtilizatoriMock;
+
+    public ServiciuUtilizatoriTest() {
+        catalogUtilizatoriMock = mock(CatalogUtilizatori.class);
+        systemUnderTest = new ServiciuUtilizatori(catalogUtilizatoriMock);
+    }
+
     @Test
     public void testInregistrareUtilizatoriSucces() throws RegistrationException {
-        String nume = String.valueOf(Math.random() * 100000);
+        String nume = "username";
         String parola = "asdf";
         String email = "cosmin.stoica97@gmail.com";
         String universitate = "poli";
         String cnp = "1970505471333";
 
         Utilizator utilizator = new Utilizator(nume, parola, email, universitate, cnp);
-        Utilizator rezultat = ServiciuUtilizatori.getInstance().inregistrareUtilizator(nume, parola, email, universitate, cnp);
+
+        when(catalogUtilizatoriMock.cautaUtilizator(nume)).thenReturn(null);
+        Utilizator rezultat = systemUnderTest.inregistrareUtilizator(nume, parola, email, universitate, cnp);
 
         assertEquals(utilizator.afisare(), rezultat.afisare());
     }
@@ -59,25 +71,26 @@ public class ServiciuUtilizatoriTest {
         String[] data = inregistrareEsuataDataProvider().get(i);
         String nume = data[0], parola = data[1], email = data[2], universitate = data[3], cnp = data[4];
 
-        ServiciuUtilizatori.getInstance().inregistrareUtilizator(nume, parola, email, universitate, cnp);
+        systemUnderTest.inregistrareUtilizator(nume, parola, email, universitate, cnp);
     }
 
     @Test
     public void testAutentificareReusita() throws RegistrationException {
-        String nume = String.valueOf(Math.random() * 100000);
+        String nume = "username";
         String parola = "asdf";
         String email = "cosmin.stoica97@gmail.com";
         String universitate = "poli";
         String cnp = "1970505471333";
 
-        ServiciuUtilizatori.getInstance().inregistrareUtilizator(nume, parola, email, universitate, cnp);
-        assertTrue(ServiciuUtilizatori.getInstance().autentificareUtilizator(nume, parola));
+        when(catalogUtilizatoriMock.cautaUtilizator(nume))
+                .thenReturn(new Utilizator(nume, parola, email, universitate, cnp));
+
+        assertTrue(systemUnderTest.autentificareUtilizator(nume, parola));
     }
 
     @Test
     public void testAutentificareEsuataNume() throws RegistrationException {
-        String nume = String.valueOf(Math.random() * 100000);
-        testAutentificare(nume, "asdf");
+        testAutentificare("asdf", "asdf");
     }
 
     @Test
@@ -86,13 +99,15 @@ public class ServiciuUtilizatoriTest {
     }
 
     private void testAutentificare(String username, String password) throws RegistrationException {
-        String nume = String.valueOf(Math.random() * 100000);
+        String nume = "username";
         String parola = "asdf";
         String email = "cosmin.stoica97@gmail.com";
         String universitate = "poli";
         String cnp = "1970505471333";
 
-        ServiciuUtilizatori.getInstance().inregistrareUtilizator(nume, parola, email, universitate, cnp);
-        assertFalse(ServiciuUtilizatori.getInstance().autentificareUtilizator(username == null ? nume : username, password));
+        when(catalogUtilizatoriMock.cautaUtilizator(nume))
+                .thenReturn(new Utilizator(nume, parola, email, universitate, cnp));
+
+        assertFalse(systemUnderTest.autentificareUtilizator(username == null ? nume : username, password));
     }
 }

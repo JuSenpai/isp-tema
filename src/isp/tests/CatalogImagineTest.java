@@ -2,6 +2,7 @@ package isp.tests;
 
 import isp.Aplicatie;
 import isp.collections.CatalogImagine;
+import isp.collections.services.ServiciuSerializare;
 import isp.entity.Imagine;
 import isp.entity.SituatieDefect;
 import isp.entity.TipDefectiune;
@@ -9,8 +10,17 @@ import isp.entity.Utilizator;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class CatalogImagineTest {
+
+    private ServiciuSerializare serviciuSerializareMock;
+    private CatalogImagine systemUnderTest;
+
+    public CatalogImagineTest() {
+        serviciuSerializareMock = mock(ServiciuSerializare.class);
+        systemUnderTest = new CatalogImagine(serviciuSerializareMock);
+    }
 
     @Test
     public void testCautareDupaUtilizator() {
@@ -22,8 +32,8 @@ public class CatalogImagineTest {
                 "test test"
         );
 
-        CatalogImagine.getInstance().adaugaImagine(imagine);
-        assertNotNull(CatalogImagine.getInstance().cautareDupaUtilizator(utilizator)
+        systemUnderTest.adaugaImagine(imagine);
+        assertNotNull(systemUnderTest.cautareDupaUtilizator(utilizator)
                 .stream()
                 .filter(imagine::equals)
                 .findFirst()
@@ -40,8 +50,8 @@ public class CatalogImagineTest {
                 "test test"
         );
 
-        CatalogImagine.getInstance().adaugaImagine(imagine);
-        assertNotNull(CatalogImagine.getInstance().cautareDupaTipDefectiune(tipDefectiune)
+        systemUnderTest.adaugaImagine(imagine);
+        assertNotNull(systemUnderTest.cautareDupaTipDefectiune(tipDefectiune)
                 .stream()
                 .filter(imagine::equals)
                 .findFirst()
@@ -58,8 +68,8 @@ public class CatalogImagineTest {
                 "test test"
         );
 
-        CatalogImagine.getInstance().adaugaImagine(imagine);
-        assertNotNull(CatalogImagine.getInstance().cautareDupaStareCurenta(stareCurenta)
+        systemUnderTest.adaugaImagine(imagine);
+        assertNotNull(systemUnderTest.cautareDupaStareCurenta(stareCurenta)
                 .stream()
                 .filter(imagine::equals)
                 .findFirst()

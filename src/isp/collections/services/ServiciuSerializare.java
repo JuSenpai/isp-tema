@@ -8,25 +8,15 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 public class ServiciuSerializare {
-    private static ServiciuSerializare instance = null;
-
     public final String FISIER_UTILIZATORI = "utilizatori.dat";
     public final String FISIER_IMAGINI = "imagini.dat";
 
     private HashMap<String, String> fisiere = new HashMap<String, String>() {
     };
 
-    private ServiciuSerializare() {
+    public ServiciuSerializare() {
         fisiere.put(String.valueOf(Utilizator[].class), FISIER_UTILIZATORI);
         fisiere.put(String.valueOf(Imagine[].class), FISIER_IMAGINI);
-    }
-
-    public static ServiciuSerializare getInstance() {
-        if (instance == null) {
-            instance = new ServiciuSerializare();
-        }
-
-        return instance;
     }
 
     public void serializare(Object object) throws IOException {

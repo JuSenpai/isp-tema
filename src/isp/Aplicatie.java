@@ -2,6 +2,7 @@ package isp;
 
 import isp.collections.CatalogImagine;
 import isp.collections.CatalogUtilizatori;
+import isp.collections.services.ServiciuSerializare;
 import isp.collections.services.ServiciuUtilizatori;
 import isp.entity.*;
 import isp.exception.RegistrationException;
@@ -9,8 +10,11 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Aplicatie {
-    private static Aplicatie instance = null;
     public static final String SEPARATOR = "-------------------------------------------------------";
+    private ServiciuUtilizatori serviciuUtilizatori;
+    private ServiciuSerializare serviciuSerializare;
+    private CatalogImagine catalogImagine;
+    private CatalogUtilizatori catalogUtilizatori;
     private Utilizator utilizatorCurent = null;
     public static final Utilizator GLOBAL_USER = new Utilizator(
         "Fairy Godmother",
@@ -33,19 +37,11 @@ public class Aplicatie {
         exit            // inchide aplicatia definitiv
     }
 
-    public static Aplicatie getInstance() {
-        if (instance == null) {
-            instance = new Aplicatie();
-        }
-
-        return instance;
-    }
-
     private Aplicatie() {
-    }
-
-    public Utilizator getUtilizatorCurent() {
-        return utilizatorCurent;
+        serviciuSerializare = new ServiciuSerializare();
+        catalogImagine = new CatalogImagine(serviciuSerializare);
+        catalogUtilizatori = new CatalogUtilizatori(serviciuSerializare);
+        serviciuUtilizatori = new ServiciuUtilizatori(catalogUtilizatori);
     }
 
     public void setUtilizatorCurent(Utilizator utilizator) {
@@ -59,9 +55,9 @@ public class Aplicatie {
         System.out.println("Introdu parola: ");
         String password = scanner.nextLine();
         System.out.println("Autentificare... ");
-        if (ServiciuUtilizatori.getInstance().autentificareUtilizator(username, password)) {
+        if (serviciuUtilizatori.autentificareUtilizator(username, password)) {
             System.out.println("Autentificare reusita!");
-            utilizatorCurent = CatalogUtilizatori.getInstance().cautaUtilizator(username);
+            utilizatorCurent = catalogUtilizatori.cautaUtilizator(username);
             System.out.println(SEPARATOR);
         } else {
             System.out.println("Autentificare esuata, doresti sa incerci din nou? (Y/N)");
@@ -86,7 +82,7 @@ public class Aplicatie {
         String cnp = scanner.nextLine();
 
         try {
-            ServiciuUtilizatori.getInstance().inregistrareUtilizator(username, parola, email, universitate, cnp);
+            serviciuUtilizatori.inregistrareUtilizator(username, parola, email, universitate, cnp);
             System.out.println("Inregistrare reusita!");
             System.out.println(SEPARATOR);
         } catch (RegistrationException e) {
@@ -112,7 +108,7 @@ public class Aplicatie {
     public void secventaImaginiProprii() {
         System.out.println(SEPARATOR);
         if (utilizatorCurent != null && !(utilizatorCurent instanceof UtilizatorAnonim)) {
-            ArrayList<Imagine> images = CatalogImagine.getInstance().cautareDupaUtilizator(utilizatorCurent);
+            ArrayList<Imagine> images = catalogImagine.cautareDupaUtilizator(utilizatorCurent);
             images.forEach(image -> System.out.println(image.toString()));
         } else if (utilizatorCurent instanceof UtilizatorAnonim) {
             System.out.println("Utilizatorii anonimi nu pot vedea imaginile adaugate. Te rugam sa te inregistrezi pentru a vedea imaginile!");
@@ -129,7 +125,7 @@ public class Aplicatie {
             System.out.println("Alege un nume: ");
             String username = scanner.nextLine();
             try {
-                utilizatorCurent = ServiciuUtilizatori.getInstance().inregistrareAnonima(username);
+                utilizatorCurent = serviciuUtilizatori.inregistrareAnonima(username);
             } catch (RegistrationException e) {
                 System.out.println(e.getMessage());
                 System.out.println("Doresti sa incerci din nou? (Y/N)");
@@ -143,7 +139,6 @@ public class Aplicatie {
             }
         }
 
-        CatalogImagine catalogImagine = CatalogImagine.getInstance();
         System.out.println("Introdu sursa imaginii (URL sau PATH): ");
         String sursa = scanner.nextLine();
         System.out.println("Introdu tipul de defectiune prezent in imagine: ");
@@ -192,7 +187,7 @@ public class Aplicatie {
             scanner.nextLine();
             Imagine imagine = utilizatorCurent.getImagini().stream().filter(imagine1 -> imagine1.getId() == id).findFirst().orElse(null);
             if (imagine != null) {
-                CatalogImagine.getInstance().stergeImagine(id);
+                catalogImagine.stergeImagine(id);
                 System.out.println("Imaginea a fost stearsa cu succes!");
             } else {
                 System.out.println("Imaginea nu este a ta sau nu exista! Nu a putut fi stearsa.");
@@ -231,7 +226,7 @@ public class Aplicatie {
                     stareNoua = SituatieDefect.rezolvat;
                 else
                     stareNoua = SituatieDefect.deschis;
-                CatalogImagine.getInstance().updateImagine(id, stareNoua);
+                catalogImagine.updateImagine(id, stareNoua);
                 System.out.println("Imaginea a fost modificată cu succes!");
             } else {
                 System.out.println("Imaginea nu este a ta sau nu exista! Nu a putut fi modificată.");
@@ -242,7 +237,7 @@ public class Aplicatie {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Aplicatie app = Aplicatie.getInstance();
+        Aplicatie app = new Aplicatie();
 
         while (true) {
             try {
@@ -287,7 +282,7 @@ public class Aplicatie {
                         break;
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+
             }
         }
     }

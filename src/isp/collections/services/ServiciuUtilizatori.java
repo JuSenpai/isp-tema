@@ -6,17 +6,10 @@ import isp.entity.UtilizatorAnonim;
 import isp.exception.RegistrationException;
 
 public class ServiciuUtilizatori {
-    private static ServiciuUtilizatori instance = null;
-    private CatalogUtilizatori catalog = CatalogUtilizatori.getInstance();
+    private CatalogUtilizatori catalog;
 
-    private ServiciuUtilizatori() {}
-
-    public static ServiciuUtilizatori getInstance() {
-        if (instance == null) {
-            instance = new ServiciuUtilizatori();
-        }
-
-        return instance;
+    public ServiciuUtilizatori(CatalogUtilizatori catalogUtilizatori) {
+        catalog = catalogUtilizatori;
     }
 
     public Utilizator inregistrareUtilizator(String nume, String parola, String email, String universitate, String cnp)

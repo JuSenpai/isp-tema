@@ -10,24 +10,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class CatalogImagine {
-    private static CatalogImagine instance = null;
-    private ServiciuSerializare serviciuSerializare = ServiciuSerializare.getInstance();
+    private ServiciuSerializare serviciuSerializare;
     private ArrayList<Imagine> catalog = new ArrayList<>();
 
-    private CatalogImagine() {
+    public CatalogImagine(ServiciuSerializare serviciuSerializare) {
+        this.serviciuSerializare = serviciuSerializare;
         try {
             catalog = serviciuSerializare.incarcareFisier(Imagine.class);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    public static CatalogImagine getInstance() {
-        if (instance == null) {
-            instance = new CatalogImagine();
-        }
-
-        return instance;
     }
 
     public void adaugaImagine(Imagine imagine) {

@@ -1,6 +1,7 @@
 package isp.entity;
 
 import isp.collections.CatalogImagine;
+import isp.collections.services.ServiciuSerializare;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -49,6 +50,8 @@ public class Utilizator implements Serializable {
     }
 
     public ArrayList<Imagine> getImagini() {
-        return CatalogImagine.getInstance().cautareDupaUtilizator(this);
+        return new CatalogImagine(
+                new ServiciuSerializare()
+        ).cautareDupaUtilizator(this);
     }
 }
